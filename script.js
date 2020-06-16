@@ -15,10 +15,10 @@ function init() {
 
 	document
 		.getElementById('yourTopArtists')
-		.appendChild(makeUL(topArtistsShortTerm.names, topArtistsShortTerm.images));
+		.appendChild(makeArtistList(topArtistsShortTerm.names, topArtistsShortTerm.images));
 	document
 		.getElementById('yourRecommendedArtists')
-		.appendChild(makeUL(topArtistsLongTerm.names, topArtistsLongTerm.images));
+		.appendChild(makeArtistList(topArtistsLongTerm.names, topArtistsLongTerm.images));
 
 	var relatedArtists = getRelatedArtists(token, topArtistsShortTerm.ids);
 	console.log(relatedArtists);
@@ -219,9 +219,9 @@ function addToPlaylist(playlistId, songUris, accessToken) {
 	});
 }
 
-// POPULATE
+//// POPULATE COLUMNS ////
 
-function makeUL(names, images) {
+function makeArtistList(names, images) {
 	// Create the list element:
 	var list = document.createElement('ul');
 
@@ -251,3 +251,8 @@ function makeUL(names, images) {
 	// Finally, return the constructed list:
 	return list;
 }
+
+// to do:
+// populate the middle row (recommendations).
+// will need to compute if the user has ever listened to a given artist
+// consider: all 10 images in one row, for each artist
