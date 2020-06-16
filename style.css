@@ -1,10 +1,9 @@
-/* body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
-} */
+:root {
+  --spotify-green: #1DB954
+}
 
 a {
-  color: #1DB954;
+  color: var(--spotify-green);
 }
 
 * {
@@ -18,4 +17,48 @@ a {
 
 body {
   background-color: black;
+}
+
+button {
+  background-color: var(--spotify-green);
+  margin: 1%;
+  border: none
+}
+
+/* 
+li {
+  text-align: left;
+  margin-left: 10%;
+  list-style: none;
+} */
+
+.artist-names {
+  text-align: left;
+  max-width: 70%;
+  font-size: 18px;
+  /* margin-left: 50%; */
+}
+
+/* FLEXBOX */
+.flex-grid {
+  display: flex;
+}
+
+.col {
+  flex: 1;
+}
+
+@media (max-width: 400px) {
+  .flex-grid {
+    display: block;
+  }
+}
+
+.flex-grid-thirds {
+  display: flex;
+  justify-content: space-between;
+}
+
+.flex-grid-thirds .col {
+  width: 32%;
 }

@@ -2,22 +2,57 @@
 <!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
 <!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
 <!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title></title>
-        <meta name="description" content="">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="style.css">
-    </head>
-    <body>
-        <h1>Better Discover Weekly</h1>
+<!--[if gt IE 8]><!-->
+<html class="no-js">
+<!--<![endif]-->
 
-        <!-- <a href = "https://accounts.spotify.com/authorize?client_id=d3b460e727004b33957bde5c8802673c&redirect_uri=http://127.0.0.1:5500/index.html&scope=user-read-private%20user-read-email&response_type=token&state=123">Authorize Spotify</a> -->
-        <a href = "https://accounts.spotify.com/authorize?client_id=d3b460e727004b33957bde5c8802673c&redirect_uri=http://connorrothschild.github.io/better-discover-weekly&scope=user-read-private%20user-read-email&response_type=token&state=123">Authorize Spotify</a>
-        
-        <script src="script.js" async defer></script>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title></title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+</head>
 
-    </body>
+<body>
+
+    <h1>Better Discover Weekly</h1>
+
+    <a
+        href="https://accounts.spotify.com/authorize?client_id=d3b460e727004b33957bde5c8802673c&redirect_uri=http://127.0.0.1:5500/index.html&scope=user-read-private%20user-read-email&response_type=token&state=123">Authorize
+        Spotify</a>
+    <!-- <a href = "https://accounts.spotify.com/authorize?client_id=d3b460e727004b33957bde5c8802673c&redirect_uri=http://connorrothschild.github.io/better-discover-weekly&scope=user-read-private%20user-read-email&response_type=token&state=123">Authorize Spotify</a> -->
+
+    <br>
+    <button onclick="init()">Generate my Playlist!</button>
+
+    <div class="flex-grid">
+
+        <div class="col">
+
+            Your top artists in the last 4 weeks:
+
+            <div id = "recommended"></div>
+
+        </div>
+        <div class="col">
+
+            Your recommended artists:
+
+        </div>
+
+        <div class="col">
+            Playlist!
+        </div>
+
+    </div>
+
+    <!-- <script src="https://sdk.scdn.co/spotify-player.js"></script> -->
+    <script src="script.js"></script>
+
+</body>
+
 </html>
