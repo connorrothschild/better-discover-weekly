@@ -1,0 +1,21 @@
+/* body {
+  padding: 50px;
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+} */
+
+a {
+  color: #1DB954;
+}
+
+* {
+  margin: auto;
+  box-sizing: border-box;
+  text-align: center;
+  padding: 1%;
+  color: white;
+  font-family: Proxima Nova;
+}
+
+body {
+  background-color: black;
+}
