@@ -13,7 +13,15 @@ function init() {
 	var topArtistsLongTerm = getTopArtists(token, 'long_term');
 	console.log(topArtistsLongTerm);
 
-	document.getElementById('recommended').appendChild(makeUL(topArtistsShortTerm.names, topArtistsShortTerm.images));
+	document
+		.getElementById('yourTopArtists')
+		.appendChild(makeUL(topArtistsShortTerm.names, topArtistsShortTerm.images));
+	document
+		.getElementById('yourRecommendedArtists')
+		.appendChild(makeUL(topArtistsLongTerm.names, topArtistsLongTerm.images));
+
+	var relatedArtists = getRelatedArtists(token, topArtistsShortTerm.ids);
+	console.log(relatedArtists);
 }
 
 /**
@@ -30,7 +38,7 @@ function getAccessToken() {
 }
 
 /**
- * @function getUserId Performs a GET request to Spotify's API to get the userid associated witht the access token. 
+ * @function getUserId Performs a GET request to Spotify's API to get the userid associated with the access token. 
  * @param  {string} accessToken {Spotify access token}
  * @return {string} {Spotify User Id}
  */
@@ -51,14 +59,14 @@ function getUserId(accessToken) {
 }
 
 /**
- * @function getTopArtists Performs a GET request to Spotify's API to get the userid associated witht the access token. 
+ * @function getTopArtists Performs a GET request to Spotify's API to get a user's top artists 
  * @param  {string} accessToken {Spotify access token}
  * @return {string} {Spotify User Id}
  */
 function getTopArtists(accessToken, term) {
 	var userId = '';
 	$.ajax({
-		url     : 'https://api.spotify.com/v1/me/top/artists?time_range=' + term,
+		url     : 'https://api.spotify.com/v1/me/top/artists?limit=10&time_range=' + term,
 		type    : 'GET',
 		async   : false,
 		headers : {
@@ -72,6 +80,7 @@ function getTopArtists(accessToken, term) {
 	var images = [];
 	var names = [];
 	var urls = [];
+	var ids = [];
 	var artists = [];
 
 	for (i = 0; i < artist_metadata.length; i++) {
@@ -79,14 +88,52 @@ function getTopArtists(accessToken, term) {
 		images.push(artist_metadata[i].images[2]);
 		names.push(artist_metadata[i].name);
 		urls.push(artist_metadata[i].uri);
+		ids.push(artist_metadata[i].id);
 
-		artists = { names, images, urls };
-		// images.push(artist_metadata[i].images);
+		artists = { names, images, urls, ids };
 	}
 
-	// artists = d3.merge(artists, images);
-
+	// return artist_metadata;
 	return artists;
+}
+
+/**
+ * @function listRelatedArtists Performs a GET request to Spotify's API to get related artists 
+ * @param  {string} accessToken {Spotify access token}
+ * @param  {string} artistId {Spotify access token}
+ */
+function listRelatedArtists(accessToken, artistId) {
+	var relatedArtists;
+	$.ajax({
+		url     : `https://api.spotify.com/v1/artists/${artistId}/related-artists`,
+		type    : 'GET',
+		async   : false,
+		headers : {
+			Authorization : 'Bearer ' + accessToken
+		},
+		success : function(data) {
+			relatedArtists = data.artists;
+		},
+		error   : function(er) {
+			console.log(er);
+		}
+	});
+
+	return relatedArtists;
+}
+
+/**
+ * @function getRelatedArtists uses the listRelatedArtists function and creates an array of artists
+ * @param  {string} accessToken {Spotify access token}
+ * @param  {string} artistId {Spotify access token}
+ */
+function getRelatedArtists(accessToken, artistId) {
+	var relatedArtistsDF = [];
+	for (i = 0; i < 10; i++) {
+		relatedArtistsDF.push(listRelatedArtists(accessToken, artistId[i]));
+	}
+
+	return relatedArtistsDF;
 }
 
 /**
@@ -180,25 +227,25 @@ function makeUL(names, images) {
 
 	for (var i = 0; i < names.length; i++) {
 		// Create the list item:
-		var name = document.createElement('p');
+		var div = document.createElement('div');
+
 		var image = document.createElement('img');
 
-		name.className = 'artist-names';
-
 		image.src = images[i].url;
-		image.width = 80;
-		image.height = 80;
+		image.width = 60;
+		image.height = 60;
 		image.style = 'vertical-align: middle';
 
-		var texts = document.createTextNode(names[i]);
-		// texts.style = 'padding-left: 50%';
+		var text = document.createTextNode(' ' + names[i]);
 
 		// Set its contents:
-		name.appendChild(image);
-		name.appendChild(texts);
+		div.appendChild(image);
+		div.appendChild(text);
+
+		div.className = 'artists';
 
 		// Add it to the list:
-		list.appendChild(name);
+		list.appendChild(div);
 	}
 
 	// Finally, return the constructed list:
