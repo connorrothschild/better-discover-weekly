@@ -41,3 +41,4 @@ vignettes/*.pdf
 
 #Spotify Key
 keys.yaml
+.env
