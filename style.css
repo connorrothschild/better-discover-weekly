@@ -2,15 +2,10 @@
 	--spotify-green: #1db954;
 }
 
-a {
-	color: var(--spotify-green);
-}
-
 * {
 	margin: auto;
 	box-sizing: border-box;
 	text-align: center;
-	padding: 1%;
 	color: white;
 	font-family: Proxima Nova;
 }
@@ -19,30 +14,88 @@ body {
 	background-color: black;
 }
 
-button {
-	background-color: var(--spotify-green);
-	margin: 1%;
-	border: none;
+h1,
+h2,
+h3 {
+	margin: 1%
 }
 
 .colHeader {
 	font-size: 1.5rem;
+	margin-bottom: 2.5%;
 }
 
 .artists {
 	text-align: left;
-	/* max-width: 50%; */
 	font-size: 18px;
 }
 
-#generate {
+.artists img {
+	vertical-align: top;
+	margin: 0 !important;
+	/* padding: 1% !important; */
+	/* max-width: 50%; */
+}
+
+ul .recommendationArtists {
+	list-style: none;
+	margin: 0 !important;
+	padding: 0 !important;
+}
+
+/* 
+ul {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+} */
+
+.recommendationArtists img {
+	vertical-align: top;
+}
+
+button {
 	font-size: 18px;
+	background-color: var(--spotify-green);
+	border: none;
+}
+
+#generate {
+	padding: 2.5%;
+}
+
+
+#init {
+	padding: .5% 1% .5% 1%;
+	margin: 1%;
+}
+
+.num {
+	text-align: center;
+	font-size: 200%;
+	display: block;
+}
+
+.authorizationLink {
+	/* -webkit-appearance: button;
+	-moz-appearance: button;
+	appearance: button;
+
+	text-decoration: none; */
+	color: var(--spotify-green)
+}
+
+.authorizationLink:visited {
+	/* display: none; */
+	/* background-color: grey; */
+	color: darkgrey;
 }
 
 /* FLEXBOX */
 .flex-grid {
 	display: flex;
 	flex-direction: row;
+	align-items: flex-start;
 }
 
 .col {

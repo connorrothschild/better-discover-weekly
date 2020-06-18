@@ -10,18 +10,16 @@ function init() {
 	var topArtistsShortTerm = getTopArtists(token, 'short_term');
 	console.log(topArtistsShortTerm);
 
-	var topArtistsLongTerm = getTopArtists(token, 'long_term');
-	console.log(topArtistsLongTerm);
+	// var topArtistsLongTerm = getTopArtists(token, 'long_term');
+	// console.log(topArtistsLongTerm);
 
-	document
-		.getElementById('yourTopArtists')
-		.appendChild(makeArtistList(topArtistsShortTerm.names, topArtistsShortTerm.images));
-	document
-		.getElementById('yourRecommendedArtists')
-		.appendChild(makeArtistList(topArtistsLongTerm.names, topArtistsLongTerm.images));
+	document.getElementById('yourTopArtists').appendChild(makeArtistList(topArtistsShortTerm));
+	// document.getElementById('yourRecommendedArtists').appendChild(makeArtistList(topArtistsLongTerm));
 
-	var relatedArtists = getRelatedArtists(token, topArtistsShortTerm.ids);
+	var relatedArtists = getRelatedArtists(token, topArtistsShortTerm);
 	console.log(relatedArtists);
+
+	document.getElementById('yourRecommendedArtists').appendChild(makeRecommendedList(relatedArtists));
 }
 
 /**
@@ -65,6 +63,7 @@ function getUserId(accessToken) {
  */
 function getTopArtists(accessToken, term) {
 	var userId = '';
+	var artist_metadata;
 	$.ajax({
 		url     : 'https://api.spotify.com/v1/me/top/artists?limit=10&time_range=' + term,
 		type    : 'GET',
@@ -74,26 +73,10 @@ function getTopArtists(accessToken, term) {
 		},
 		success : function(data) {
 			artist_metadata = data.items;
+			artists = artist_metadata;
 		}
 	});
 
-	var images = [];
-	var names = [];
-	var urls = [];
-	var ids = [];
-	var artists = [];
-
-	for (i = 0; i < artist_metadata.length; i++) {
-		// for each row, grab images, names, and URLs
-		images.push(artist_metadata[i].images[2]);
-		names.push(artist_metadata[i].name);
-		urls.push(artist_metadata[i].uri);
-		ids.push(artist_metadata[i].id);
-
-		artists = { names, images, urls, ids };
-	}
-
-	// return artist_metadata;
 	return artists;
 }
 
@@ -125,12 +108,12 @@ function listRelatedArtists(accessToken, artistId) {
 /**
  * @function getRelatedArtists uses the listRelatedArtists function and creates an array of artists
  * @param  {string} accessToken {Spotify access token}
- * @param  {string} artistId {Spotify access token}
+ * @param  {string} data {artist dataframe}
  */
-function getRelatedArtists(accessToken, artistId) {
+function getRelatedArtists(accessToken, data) {
 	var relatedArtistsDF = [];
 	for (i = 0; i < 10; i++) {
-		relatedArtistsDF.push(listRelatedArtists(accessToken, artistId[i]));
+		relatedArtistsDF.push(listRelatedArtists(accessToken, data[i].id));
 	}
 
 	return relatedArtistsDF;
@@ -192,6 +175,7 @@ function getTrackUri(songData, accessToken) {
 	});
 	return trackUri;
 }
+
 /**
    * @function addToPlaylist
    * @param  {string} playlistId  {Spotify playlist Id of playlist to add songs to}
@@ -221,22 +205,27 @@ function addToPlaylist(playlistId, songUris, accessToken) {
 
 //// POPULATE COLUMNS ////
 
-function makeArtistList(names, images) {
+/**
+   * @function makeArtistList
+   * @param  {Array} data {Dataset. In this case, nested array of recommended artists.}
+   * @return 
+   */
+function makeArtistList(data) {
 	// Create the list element:
 	var list = document.createElement('ul');
 
-	for (var i = 0; i < names.length; i++) {
+	for (var i = 0; i < data.length; i++) {
 		// Create the list item:
 		var div = document.createElement('div');
 
 		var image = document.createElement('img');
 
-		image.src = images[i].url;
+		image.src = data[i].images[2].url;
 		image.width = 60;
 		image.height = 60;
 		image.style = 'vertical-align: middle';
 
-		var text = document.createTextNode(' ' + names[i]);
+		var text = document.createTextNode(' Based on ' + data[i].name + '... ');
 
 		// Set its contents:
 		div.appendChild(image);
@@ -252,7 +241,52 @@ function makeArtistList(names, images) {
 	return list;
 }
 
+/**
+   * @function makeRecommendedList
+   * @param  {Array} data {Dataset. In this case, nested array of recommended artists.}
+   * @return 
+   */
+function makeRecommendedList(data) {
+	// Create the list element:
+	var div = document.createElement('div');
+
+	for (var i = 0; i < data.length; i++) {
+		// Create the list item:
+		console.log(data[i]);
+		console.log('Running through ' + i);
+
+		artist = data[i];
+
+		var listOfImages = document.createElement('div');
+
+		// figure out how to do this for loop programmatically (change 5 to something like artist[i].length?)
+		for (var j = 0; j < 5; j++) {
+			var image = document.createElement('img');
+
+			image.src = artist[j].images[2].url;
+			// console.log(artist[j].images[0].url);
+			image.width = 60;
+			image.height = 60;
+			// image.style = 'vertical-align: middle';
+
+			// Set its contents:
+			listOfImages.appendChild(image);
+		}
+
+		listOfImages.className = 'recommendationArtists';
+
+		div.appendChild(listOfImages);
+	}
+
+	// Finally, return the constructed list:
+	return div;
+}
+
 // to do:
 // populate the middle row (recommendations).
 // will need to compute if the user has ever listened to a given artist
 // consider: all 10 images in one row, for each artist
+
+// to do:
+// hide everything other than 'but first, please authorize your spotify account.'
+// upon authorization, unhide everything
