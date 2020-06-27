@@ -21,43 +21,52 @@
 
     <h1>Better Discover Weekly</h1>
 
-    <a class = 'authorizationLink'
-        href="https://accounts.spotify.com/authorize?client_id=d3b460e727004b33957bde5c8802673c&redirect_uri=http://127.0.0.1:5500/index.html&scope=user-read-private%20user-read-email&response_type=token&state=123">Authorize Spotify</a>
+    <a class='authorizationLink'
+        href="https://accounts.spotify.com/authorize?client_id=d3b460e727004b33957bde5c8802673c&redirect_uri=http://127.0.0.1:5500/index.html&scope=user-read-private%20user-read-email&response_type=token&state=123">Authorize
+        Spotify</a>
     <!-- <a class = 'authorizationLink' href = "https://accounts.spotify.com/authorize?client_id=d3b460e727004b33957bde5c8802673c&redirect_uri=http://connorrothschild.github.io/better-discover-weekly&scope=user-read-private%20user-read-email&response_type=token&state=123">Authorize Spotify</a> -->
     <br>
 
-    <button id = "init" onclick="init();this.disabled=true">Let's go!</button>
+    <button id="init" onclick="init();this.disabled=true">Let's go!</button>
+    <p id='authorizationError'><b>Error</b>: Spotify has not been authorized.</p>
     <br>
 
-    <div class="flex-grid">
+    <div id="nowPlaying">Now playing:
+        <span id="songName"></span>,
+        <br>by
+        <span id="artistName"></span>
+    </div>
+
+
+    <div id="mainContent" class="flex-grid">
 
         <div class="col">
 
-            <p class = "colHeader">
-                <span class = 'num'>1</span>
+            <p class="colHeader">
+                <span class='num'>1</span>
                 See your top artists (last month)
             </p>
 
-            <div id = "yourTopArtists"></div>
+            <div id="yourTopArtists"></div>
 
         </div>
         <div class="col">
 
-            <p class = "colHeader">
-                <span class = 'num'>2</span>
+            <p class="colHeader">
+                <span class='num'>2</span>
                 Select from your recommended artists
             </p>
 
-            <div id = "yourRecommendedArtists"></div>
+            <div id="yourRecommendedArtists"></div>
+
 
         </div>
 
         <div class="col">
-            <p class = "colHeader">
-                <span class = 'num'>3</span>    
-                <button id = "generate" onclick="createPlaylist()">Create your playlist!</button></p>
+            <p class="colHeader">
+                <span class='num'>3</span>
+                <button id="generate" onclick="createPlaylist()">Create your playlist!</button></p>
         </div>
-
     </div>
 
     <!-- <script src="https://sdk.scdn.co/spotify-player.js"></script> -->

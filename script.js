@@ -1,14 +1,30 @@
-// var token = {};
+var token = {};
+
+var authorizationError = document.getElementById('authorizationError');
+var mainContent = document.getElementById('mainContent');
+var nowPlaying = document.getElementById('nowPlaying');
+var songName = document.getElementById('songName');
+var artistName = document.getElementById('artistName');
+
+function accessTryCatch() {
+	try {
+		token = getAccessToken();
+		console.log('Access token: ' + token);
+	} catch (error) {
+		console.log('Access token not found.');
+		authorizationError.style = 'display:block';
+		mainContent.style = 'display:none';
+	}
+}
 
 function init() {
-	var token = getAccessToken();
-	console.log('Access token: ' + token);
+	accessTryCatch();
 
 	var userId = getUserId(token);
-	console.log('User ID: ' + userId);
+	// console.log('User ID: ' + userId);
 
 	var topArtistsShortTerm = getTopArtists(token, 'short_term');
-	console.log(topArtistsShortTerm);
+	// console.log(topArtistsShortTerm);
 
 	// var topArtistsLongTerm = getTopArtists(token, 'long_term');
 	// console.log(topArtistsLongTerm);
@@ -17,9 +33,10 @@ function init() {
 	// document.getElementById('yourRecommendedArtists').appendChild(makeArtistList(topArtistsLongTerm));
 
 	var relatedArtists = getRelatedArtists(token, topArtistsShortTerm);
-	console.log(relatedArtists);
+	// console.log(relatedArtists);
 
 	document.getElementById('yourRecommendedArtists').appendChild(makeRecommendedList(relatedArtists));
+	// console.log(document.getElementsByClassName('artistImage'));
 }
 
 /**
@@ -78,6 +95,31 @@ function getTopArtists(accessToken, term) {
 	});
 
 	return artists;
+}
+
+/**
+ * @function getArtistTopTracks Performs a GET request to Spotify's API to get an artist's top tracks
+ * @param  {string} accessToken {Spotify access token}
+ * @param  {string} artistId {artist ID}
+ */
+function getArtistTopTracks(accessToken, artistId) {
+	var topTracks;
+	$.ajax({
+		url     : `https://api.spotify.com/v1/artists/${artistId}/top-tracks?country=US`,
+		type    : 'GET',
+		async   : false,
+		headers : {
+			Authorization : 'Bearer ' + accessToken
+		},
+		success : function(data) {
+			topTracks = data;
+		},
+		error   : function(er) {
+			console.log(er);
+		}
+	});
+
+	return topTracks;
 }
 
 /**
@@ -195,7 +237,7 @@ function addToPlaylist(playlistId, songUris, accessToken) {
 			'Content-Type' : 'application/json'
 		},
 		success : function(data) {
-			console.log(data);
+			// console.log(data);
 		},
 		error   : function(er) {
 			console.log(er);
@@ -252,25 +294,40 @@ function makeRecommendedList(data) {
 
 	for (var i = 0; i < data.length; i++) {
 		// Create the list item:
-		console.log(data[i]);
-		console.log('Running through ' + i);
+		// console.log(data[i]);
 
 		artist = data[i];
 
 		var listOfImages = document.createElement('div');
 
-		// figure out how to do this for loop programmatically (change 5 to something like artist[i].length?)
 		for (var j = 0; j < 5; j++) {
+			var audioDiv = document.createElement('a');
+			audioDiv.className = 'audioDiv';
 			var image = document.createElement('img');
 
 			image.src = artist[j].images[2].url;
-			// console.log(artist[j].images[0].url);
+
+			image.song = getArtistTopTracks(token, artist[j].id);
+
 			image.width = 60;
 			image.height = 60;
-			// image.style = 'vertical-align: middle';
+
+			image.id = image.song.tracks[0].preview_url;
+
+			image.artist = artist[j].name;
+			image.song = image.song.tracks[0].name;
+
+			image.name = image.song + ', by ' + image.artist;
+
+			image.className = 'artistImage';
 
 			// Set its contents:
-			listOfImages.appendChild(image);
+			audioDiv.append(image);
+
+			audioDiv.onmouseover = mouseOver;
+			audioDiv.onmouseout = mouseOut;
+
+			listOfImages.appendChild(audioDiv);
 		}
 
 		listOfImages.className = 'recommendationArtists';
@@ -278,15 +335,35 @@ function makeRecommendedList(data) {
 		div.appendChild(listOfImages);
 	}
 
+	var audio = new Audio();
+	audio.load();
+
+	function playAudio(src) {
+		audio.src = src;
+		audio.play();
+	}
+
+	function stopAudio(audio) {
+		audio.pause();
+		audio.currentTime = 0;
+	}
+
+	function mouseOver(e) {
+		playAudio(e.originalTarget.attributes.id.nodeValue);
+		// console.log(e.originalTarget.artist + ', by ' + e.originalTarget.song);
+		nowPlaying.style = 'display: block';
+		artistName.textContent = e.originalTarget.artist;
+		songName.textContent = e.originalTarget.song;
+	}
+
+	function mouseOut() {
+		stopAudio(audio);
+		nowPlaying.style = 'display: none';
+	}
+
+	div.onmouseover = mouseOver(event);
+	div.onmouseout = mouseOut();
+
 	// Finally, return the constructed list:
 	return div;
 }
-
-// to do:
-// populate the middle row (recommendations).
-// will need to compute if the user has ever listened to a given artist
-// consider: all 10 images in one row, for each artist
-
-// to do:
-// hide everything other than 'but first, please authorize your spotify account.'
-// upon authorization, unhide everything

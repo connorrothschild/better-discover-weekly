@@ -25,6 +25,11 @@ h3 {
 	margin-bottom: 2.5%;
 }
 
+#authorizationError {
+	display: none;
+	font-size: 200%;
+}
+
 .artists {
 	text-align: left;
 	font-size: 18px;
@@ -43,15 +48,28 @@ ul .recommendationArtists {
 	padding: 0 !important;
 }
 
-/* 
-ul {
-	list-style: none;
-	margin: 0;
-	padding: 0;
-} */
-
 .recommendationArtists img {
 	vertical-align: top;
+}
+
+#nowPlaying {
+	display: none;
+	position: absolute;
+	/* for white gradient: https://colorzilla.com/gradient-editor/#1db954+1,ffffff+100/ */
+	background: #1db954;
+	background: -moz-linear-gradient(top, #1db954 1%, #000000 100%);
+	background: -webkit-linear-gradient(top, #1db954 1%, #000000 100%);
+	background: linear-gradient(to bottom, #1db954 1%, #000000 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#1db954', endColorstr='#000000', GradientType=0);
+	padding: 1%;
+	top: 10%;
+	right: 5%;
+	max-width: 30%;
+}
+
+#artistName,
+#songName {
+	font-weight: 600
 }
 
 button {
